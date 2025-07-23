@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vite + TS</title>
+	</head>
+	<body>
+		<header class="header">
+			<h1 class="header-title">Wordle</h1>
+			<p class="header-subtitle">Obtén la palabra correcta en 6 intentos</p>
+		</header>
+		<div id="app"></div>
+		<footer class="footer">
+			<p class="footer-text">Wordle</p>
+			<p class="footer-subtitle">
+				Creado por <a href="https://github.com/AletzMan">Alejandro García</a>
+			</p>
+		</footer>
+		<dialog class="dialog">
+			<div class="dialog-container">
+				<div class="dialog-message"></div>
+				<span class="dialog-word"></span>
+				<button class="dialog-button">OK</button>
+			</div>
+		</dialog>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
+</html>
