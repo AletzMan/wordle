@@ -159,6 +159,7 @@ body {
 	width: 8.7%;
 	height: 45px;
 	border-radius: 3px;
+	font-weight: 400;
 	background-color: var(--surface-color-c);
 	border: 1px solid var(--surface-color-d);
 	color: var(--text-secondary-color);
@@ -166,7 +167,7 @@ body {
 	user-select: none;
 	cursor: pointer;
 
-	&:hover {
+	&:hover:not(.key-correct):not(.key-present):not(.key-wrong) {
 		background-color: var(--surface-color-d);
 		border-color: var(--surface-color-e);
 		color: var(--text-color);
@@ -185,6 +186,21 @@ body {
 .key-icon {
 	width: 30px;
 	height: 30px;
+}
+
+.key-correct {
+	background: linear-gradient(-45deg, var(--success-color), #1b8547);
+	color: var(--text-color);
+}
+
+.key-present {
+	background: linear-gradient(-45deg, var(--warning-color), #b67e17);
+	color: var(--text-color);
+}
+
+.key-wrong {
+	background: linear-gradient(-45deg, var(--surface-color-h), #5a5757);
+	color: var(--text-color);
 }
 
 .message {
