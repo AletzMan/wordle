@@ -13,7 +13,8 @@ type NumberLetter = {
 
 //let word = ["A", "B", "R", "I", "R"];
 //let word = ["A", "R", "B", "O", "L"];
-let word = ["M", "A", "R", "E", "A"];
+//let word = ["M", "A", "R", "E", "A"];
+let word = ["T", "A", "C", "H", "A"];
 let attempts = 0;
 let currentRow = 0;
 let currentColumn = 0;
@@ -24,7 +25,7 @@ let currentWord: CurrentWord[] = [
 	{ letter: "", isCorrect: false, isPresent: false },
 	{ letter: "", isCorrect: false, isPresent: false },
 ];
-let correctWord: string[] = [];
+let correctWords: string[] = [];
 let numberLetter: NumberLetter[] = [];
 let keys: NodeListOf<HTMLDivElement> | null = null;
 
@@ -133,14 +134,32 @@ const loadValidWords = async () => {
 	const data = await response.text();
 	const words = data.split("\n");
 	const onlyLetters = words.map((l) => l.replace(/\s\d+$/, ""));
-	correctWord = [...onlyLetters];
+	correctWords = [...onlyLetters];
+	selectWord();
+};
+
+const selectWord = () => {
+	const wordsFiveLetter = correctWords.filter((w) => w.length === 5);
+	const index = Math.floor(Math.random() * wordsFiveLetter.length);
+	word = wordsFiveLetter[index].split("");
+	countLetters();
+	console.log("word", word);
 };
 
 const isWordValid = (): boolean => {
-	if (correctWord.includes(currentWord.map((l) => l.letter).join(""))) {
+	if (correctWords.includes(currentWord.map((l) => l.letter).join(""))) {
 		return true;
 	}
 	return false;
+};
+
+const markLetterSelected = (letter: string, type: "correct" | "present" | "wrong") => {
+	const key = document.querySelector<HTMLDivElement>(`#key-${letter.toLowerCase()}`);
+	if (!key) return;
+	if (key.classList.contains(`key-correct`)) return;
+	if (key.classList.contains(`key-present`) && key.textContent === letter.toUpperCase())
+		key.classList.remove(`key-present`);
+	key.classList.add(`key-${type}`);
 };
 
 const resetGame = () => {
@@ -157,6 +176,14 @@ const resetGame = () => {
 	createBoard();
 	numberLetter = [];
 	countLetters();
+	selectWord();
+	resetKeyboard();
+};
+
+const resetKeyboard = () => {
+	keys!.forEach((key) => {
+		key.classList.remove("key-correct", "key-present", "key-wrong");
+	});
 };
 
 const showDialog = (message: string[], type: "win" | "lose") => {
@@ -189,9 +216,6 @@ const checkWord = () => {
 };
 
 const checkLetter = () => {
-	console.log("Entrando a checkLetter");
-	console.log("currentWord", currentWord);
-	console.log("correctWord", correctWord);
 	for (let i = 0; i < currentWord.length; i++) {
 		const cell = document.querySelector<HTMLDivElement>(`.row-${currentRow} .cell-${i}`);
 		const indexLetter = numberLetter.findIndex(
@@ -200,6 +224,7 @@ const checkLetter = () => {
 		if (currentWord[i].letter.toLowerCase() === word[i].toLowerCase()) {
 			if (indexLetter !== -1) numberLetter[indexLetter].count--;
 			currentWord[i].isCorrect = true;
+			markLetterSelected(currentWord[i].letter, "correct");
 			cell!.classList.add("letter-correct");
 		} else if (
 			word.includes(currentWord[i].letter.toLocaleUpperCase()) &&
@@ -207,13 +232,13 @@ const checkLetter = () => {
 		) {
 			if (indexLetter !== -1) numberLetter[indexLetter].count--;
 			currentWord[i].isPresent = true;
+			markLetterSelected(currentWord[i].letter, "present");
 			cell!.classList.add("letter-present");
 		} else {
+			markLetterSelected(currentWord[i].letter, "wrong");
 			cell!.classList.add("letter-wrong");
 		}
 	}
-	console.log("currentWord", currentWord);
-	console.log("numberLetter", numberLetter);
 };
 
 countLetters();
@@ -224,9 +249,7 @@ createKeyboard();
 keys!.forEach((key) => {
 	key.addEventListener("click", () => {
 		const letter = key.id.split("-")[1];
-		console.log("letter", letter);
 		if (!letter) return;
-		//if (currentColumn === 5) return;
 		if (letter === "backspace" && currentColumn > 0) {
 			currentColumn--;
 			const cell = document.querySelector<HTMLDivElement>(
@@ -243,8 +266,6 @@ keys!.forEach((key) => {
 				message!.textContent = "Palabra no valida";
 				return;
 			} else {
-				console.log("currentColumn", currentColumn);
-				console.log("currentRow", currentRow);
 				checkWord();
 				checkLetter();
 			}
@@ -263,7 +284,6 @@ keys!.forEach((key) => {
 			numberLetter = [];
 			countLetters();
 		} else {
-			console.log("Entrando a else");
 			if (letter === "backspace") return;
 			currentWord[currentColumn].letter = letter;
 			const cell = document.querySelector<HTMLDivElement>(
