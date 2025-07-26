@@ -14,7 +14,7 @@ type NumberLetter = {
 //let word = ["A", "B", "R", "I", "R"];
 //let word = ["A", "R", "B", "O", "L"];
 //let word = ["M", "A", "R", "E", "A"];
-let word = ["T", "A", "C", "H", "A"];
+let word = ["o", "i", "r", "l", "o"];
 let attempts = 0;
 let currentRow = 0;
 let currentColumn = 0;
@@ -135,7 +135,7 @@ const loadValidWords = async () => {
 	const words = data.split("\n");
 	const onlyLetters = words.map((l) => l.replace(/\s\d+$/, ""));
 	correctWords = [...onlyLetters];
-	selectWord();
+	//selectWord();
 };
 
 const selectWord = () => {
@@ -216,21 +216,22 @@ const checkWord = () => {
 };
 
 const checkLetter = () => {
+	debugger;
 	for (let i = 0; i < currentWord.length; i++) {
 		const cell = document.querySelector<HTMLDivElement>(`.row-${currentRow} .cell-${i}`);
 		const indexLetter = numberLetter.findIndex(
 			(l) => l.letter.toLowerCase() === currentWord[i].letter.toLowerCase()
 		);
 		if (currentWord[i].letter.toLowerCase() === word[i].toLowerCase()) {
-			if (indexLetter !== -1) numberLetter[indexLetter].count--;
+			if (indexLetter > 0) numberLetter[indexLetter].count--;
 			currentWord[i].isCorrect = true;
 			markLetterSelected(currentWord[i].letter, "correct");
 			cell!.classList.add("letter-correct");
 		} else if (
-			word.includes(currentWord[i].letter.toLocaleUpperCase()) &&
+			word.includes(currentWord[i].letter.toLocaleLowerCase()) &&
 			numberLetter[indexLetter].count > 0
 		) {
-			if (indexLetter !== -1) numberLetter[indexLetter].count--;
+			if (indexLetter > 0) numberLetter[indexLetter].count--;
 			currentWord[i].isPresent = true;
 			markLetterSelected(currentWord[i].letter, "present");
 			cell!.classList.add("letter-present");
@@ -268,6 +269,8 @@ keys!.forEach((key) => {
 			} else {
 				checkWord();
 				checkLetter();
+				console.log("currentWord", currentWord);
+				console.log("numberLetter", numberLetter);
 			}
 			const row = document.querySelector<HTMLDivElement>(`.row-${currentRow}`);
 			if (!row) return;
