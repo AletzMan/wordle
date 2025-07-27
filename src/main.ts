@@ -212,6 +212,7 @@ const resetGame = (newGame: boolean = false) => {
 		testSelectWord();
 	}
 	resetKeyboard();
+	dialogWord.textContent = "";
 };
 
 const resetKeyboard = () => {
@@ -242,6 +243,7 @@ const checkWord = () => {
 			.join("")
 			.toLowerCase() === word.join("").toLowerCase()
 	) {
+		debugger;
 		dialogWord.textContent = word.join("").toUpperCase();
 		showDialog(["¡Felicidades!", "Adivinaste la palabra"], "win");
 	} else if (currentRow === 5) {
