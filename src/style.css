@@ -131,12 +131,15 @@ body {
 @keyframes new-letter {
 	0% {
 		font-size: 0;
+		transform: scale(0.95);
 	}
 	50% {
 		font-size: 1.9em;
+		transform: scale(1.05);
 	}
 	100% {
 		font-size: 1.5em;
+		transform: scale(1);
 	}
 }
 
