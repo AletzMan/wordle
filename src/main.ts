@@ -11,11 +11,28 @@ type NumberLetter = {
 	count: number;
 };
 
+const URL_API = "https://random-word-api.herokuapp.com/word?length=5&lang=es";
+
+const testWord = [
+	"capas",
+	"callo",
+	"arbol",
+	"abril",
+	"oirlo",
+	"legal",
+	"culto",
+	"legua",
+	"marea",
+	"maria",
+];
+
 //let word = ["A", "B", "R", "I", "R"];
 //let word = ["A", "R", "B", "O", "L"];
 //let word = ["M", "A", "R", "E", "A"];
-let word = ["o", "i", "r", "l", "o"];
-let attempts = 0;
+//let word = ["o", "i", "r", "l", "o"];
+//let word = ["c", "u", "l", "t", "o"];
+//et word = ["l", "e", "g", "a", "l"];
+let word = ["c", "a", "p", "a", "s"];
 let currentRow = 0;
 let currentColumn = 0;
 let currentWord: CurrentWord[] = [
@@ -115,16 +132,18 @@ const createBoard = () => {
 	board.innerHTML = html;
 };
 
-const countLetters = () => {
+const countLetters = (): NumberLetter[] => {
+	let coutnLetter: NumberLetter[] = [];
 	for (let i = 0; i < word.length; i++) {
 		const letter = word[i];
-		const index = numberLetter.findIndex((l) => l.letter === letter);
+		const index = coutnLetter.findIndex((l) => l.letter === letter);
 		if (index === -1) {
-			numberLetter.push({ letter, count: 1 });
+			coutnLetter.push({ letter, count: 1 });
 		} else {
-			numberLetter[index].count++;
+			coutnLetter[index].count++;
 		}
 	}
+	return coutnLetter;
 };
 
 const loadValidWords = async () => {
@@ -138,12 +157,27 @@ const loadValidWords = async () => {
 	//selectWord();
 };
 
-const selectWord = () => {
-	const wordsFiveLetter = correctWords.filter((w) => w.length === 5);
-	const index = Math.floor(Math.random() * wordsFiveLetter.length);
-	word = wordsFiveLetter[index].split("");
-	countLetters();
+function deleteAccent(word: string): string {
+	return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+const testSelectWord = () => {
+	const index: number = Math.floor(Math.random() * testWord.length);
+	const newWord = testWord[index];
+	console.log("newWord", newWord);
+	word = newWord.split("").map((l: string) => l.toLowerCase());
 	console.log("word", word);
+	numberLetter = [...countLetters()];
+};
+
+const selectWord = async () => {
+	const response = await fetch(URL_API);
+	const data: string[] = await response.json();
+	const wordLowerCase = data[0].toLowerCase();
+	const newWord: string = deleteAccent(wordLowerCase);
+	word = newWord.split("").map((l: string) => l.toLowerCase());
+	console.log("word", word);
+	numberLetter = [...countLetters()];
 };
 
 const isWordValid = (): boolean => {
@@ -163,7 +197,6 @@ const markLetterSelected = (letter: string, type: "correct" | "present" | "wrong
 };
 
 const resetGame = () => {
-	attempts = 0;
 	currentRow = 0;
 	currentColumn = 0;
 	currentWord = [
@@ -174,9 +207,8 @@ const resetGame = () => {
 		{ letter: "", isCorrect: false, isPresent: false },
 	];
 	createBoard();
-	numberLetter = [];
-	countLetters();
-	selectWord();
+	//selectWord();
+	testSelectWord();
 	resetKeyboard();
 };
 
@@ -214,38 +246,49 @@ const checkWord = () => {
 		showDialog(["No has adivinado la palabra", "😥"], "lose");
 	}
 };
-
 const checkLetter = () => {
-	debugger;
+	// Contar letras de la palabra objetivo (word)
+	const letterCounts: Record<string, number> = {};
+	for (const letter of word.join("").toLowerCase()) {
+		letterCounts[letter] = (letterCounts[letter] || 0) + 1;
+	}
+
+	// Primera pasada: marcar las correctas (verde)
 	for (let i = 0; i < currentWord.length; i++) {
 		const cell = document.querySelector<HTMLDivElement>(`.row-${currentRow} .cell-${i}`);
-		const indexLetter = numberLetter.findIndex(
-			(l) => l.letter.toLowerCase() === currentWord[i].letter.toLowerCase()
-		);
-		if (currentWord[i].letter.toLowerCase() === word[i].toLowerCase()) {
-			if (indexLetter > 0) numberLetter[indexLetter].count--;
+		const guessedLetter = currentWord[i].letter.toLowerCase();
+
+		if (guessedLetter === word[i].toLowerCase()) {
 			currentWord[i].isCorrect = true;
 			markLetterSelected(currentWord[i].letter, "correct");
-			cell!.classList.add("letter-correct");
-		} else if (
-			word.includes(currentWord[i].letter.toLocaleLowerCase()) &&
-			numberLetter[indexLetter].count > 0
-		) {
-			if (indexLetter > 0) numberLetter[indexLetter].count--;
+			cell?.classList.add("letter-correct");
+			letterCounts[guessedLetter]--; // Consumir una ocurrencia
+		}
+	}
+
+	// Segunda pasada: marcar las presentes (amarillo) o incorrectas (gris)
+	for (let i = 0; i < currentWord.length; i++) {
+		const cell = document.querySelector<HTMLDivElement>(`.row-${currentRow} .cell-${i}`);
+		const guessedLetter = currentWord[i].letter.toLowerCase();
+
+		if (currentWord[i].isCorrect) continue; // Ya marcada como correcta
+
+		if (word.includes(guessedLetter) && letterCounts[guessedLetter] > 0) {
 			currentWord[i].isPresent = true;
 			markLetterSelected(currentWord[i].letter, "present");
-			cell!.classList.add("letter-present");
+			cell?.classList.add("letter-present");
+			letterCounts[guessedLetter]--; // Consumir una ocurrencia
 		} else {
 			markLetterSelected(currentWord[i].letter, "wrong");
-			cell!.classList.add("letter-wrong");
+			cell?.classList.add("letter-wrong");
 		}
 	}
 };
 
-countLetters();
 loadValidWords();
 createBoard();
 createKeyboard();
+resetGame();
 
 keys!.forEach((key) => {
 	key.addEventListener("click", () => {
@@ -284,8 +327,7 @@ keys!.forEach((key) => {
 				{ letter: "", isCorrect: false, isPresent: false },
 				{ letter: "", isCorrect: false, isPresent: false },
 			];
-			numberLetter = [];
-			countLetters();
+			numberLetter = [...countLetters()];
 		} else {
 			if (letter === "backspace") return;
 			currentWord[currentColumn].letter = letter;
