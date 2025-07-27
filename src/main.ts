@@ -196,7 +196,7 @@ const markLetterSelected = (letter: string, type: "correct" | "present" | "wrong
 	key.classList.add(`key-${type}`);
 };
 
-const resetGame = () => {
+const resetGame = (newGame: boolean = false) => {
 	currentRow = 0;
 	currentColumn = 0;
 	currentWord = [
@@ -207,8 +207,10 @@ const resetGame = () => {
 		{ letter: "", isCorrect: false, isPresent: false },
 	];
 	createBoard();
-	//selectWord();
-	testSelectWord();
+	if (newGame) {
+		//selectWord();
+		testSelectWord();
+	}
 	resetKeyboard();
 };
 
@@ -228,7 +230,7 @@ const showDialog = (message: string[], type: "win" | "lose") => {
 		dialog.close();
 		dialog.open = false;
 		dialog.classList.remove("dialog-show");
-		resetGame();
+		resetGame(type === "win");
 	});
 	button.textContent = type === "win" ? "Jugar de nuevo" : "Intentar de nuevo";
 };
@@ -288,7 +290,7 @@ const checkLetter = () => {
 loadValidWords();
 createBoard();
 createKeyboard();
-resetGame();
+resetGame(true);
 
 keys!.forEach((key) => {
 	key.addEventListener("click", () => {
