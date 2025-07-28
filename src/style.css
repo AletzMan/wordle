@@ -13,7 +13,9 @@
 	--text-secondary-color: #bdbdbd;
 	--success-color: #2ecc71;
 	--warning-color: #e6a122;
-	--error-color: #e74c3c;
+	--error-color: #da2511;
+	--accent-color: #da125e;
+	--accent-color-hover: #f7156b;
 }
 
 * {
@@ -45,7 +47,7 @@ body {
 }
 
 .header-title {
-	color: red;
+	color: var(--accent-color);
 }
 
 .header-subtitle {
@@ -236,7 +238,7 @@ body {
 	box-shadow: 0 0 8px 2px #ffffff70;
 	border: none;
 	background-color: transparent;
-	backdrop-filter: blur(1px);
+	backdrop-filter: blur(2px);
 	z-index: 2;
 }
 
@@ -260,6 +262,21 @@ body {
 	background: linear-gradient(-25deg, var(--black-color), var(--surface-color-a));
 }
 
+.dialog-title {
+	font-size: 2em;
+	font-weight: 700;
+	text-transform: uppercase;
+	text-shadow: 0 1px 1px var(--surface-color-h);
+}
+
+.dialog-title-win {
+	color: var(--success-color);
+}
+
+.dialog-title-lose {
+	color: var(--error-color);
+}
+
 .dialog-message {
 	line-height: 1.5;
 	text-align: center;
@@ -274,17 +291,17 @@ body {
 }
 
 .dialog-button {
-	padding: 0.5em 1em;
+	padding: 0.75em 1.5em;
 	border: none;
 	border-radius: 4px;
-	background-color: var(--surface-color-c);
+	background-color: var(--accent-color);
 	color: var(--text-color);
 	cursor: pointer;
-	border: 1px solid var(--surface-color-g);
-	transition: color 0.2s ease-in-out, transform 50ms ease-in-out;
+	border: 1px solid var(--surface-color-e);
+	transition: all 0.2s ease-in-out;
 
 	&:hover {
-		background-color: var(--surface-color-d);
+		background-color: var(--accent-color-hover);
 		border-color: var(--surface-color-e);
 		color: var(--text-color);
 	}
