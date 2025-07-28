@@ -152,28 +152,20 @@ const loadValidWords = async () => {
 	const words = data.split("\n");
 	const onlyLetters = words.map((l) => l.replace(/\s\d+$/, ""));
 	correctWords = [...onlyLetters];
-	//selectWord();
+	resetGame(true);
 };
 
 function deleteAccent(word: string): string {
 	return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-const testSelectWord = () => {
-	const index: number = Math.floor(Math.random() * testWord.length);
-	const newWord = testWord[index];
+const selectWord = () => {
+	const response = correctWords.filter((w) => w.length === 5);
+	const index: number = Math.floor(Math.random() * response.length);
+	const newWord = response[index];
 	console.log("newWord", newWord);
-	word = newWord.split("").map((l: string) => l.toLowerCase());
-	console.log("word", word);
-	numberLetter = [...countLetters()];
-};
-
-const selectWord = async () => {
-	const response = await fetch(URL_API);
-	const data: string[] = await response.json();
-	const wordLowerCase = data[0].toLowerCase();
-	const newWord: string = deleteAccent(wordLowerCase);
-	word = newWord.split("").map((l: string) => l.toLowerCase());
+	const wordDeleteAccent = deleteAccent(newWord);
+	word = wordDeleteAccent.split("").map((l: string) => l.toLowerCase());
 	console.log("word", word);
 	numberLetter = [...countLetters()];
 };
@@ -206,8 +198,7 @@ const resetGame = (newGame: boolean = false) => {
 	];
 	createBoard();
 	if (newGame) {
-		//selectWord();
-		testSelectWord();
+		selectWord();
 	}
 	resetKeyboard();
 };
@@ -242,22 +233,23 @@ const showDialog = (message: string[], type: "win" | "lose") => {
 	dialog.querySelector<HTMLDivElement>(".dialog-message")!.innerHTML = message.join("<br>");
 	const dialogTitle = document.querySelector<HTMLSpanElement>(".dialog-title") as HTMLSpanElement;
 	const button = dialog.querySelector<HTMLButtonElement>(".dialog-button")!;
+	const dialogWord = document.querySelector<HTMLSpanElement>(".dialog-word")!;
 	button.addEventListener("mousedown", () => {
 		dialog.close();
 		dialog.open = false;
 		dialog.classList.remove("dialog-show");
-		console.log("type", type);
 		resetGame(type === "win");
 		dialog.remove();
 	});
 	button.textContent = type === "win" ? "Jugar de nuevo" : "Intentar de nuevo";
-	dialogTitle.textContent = type === "win" ? "¡Ganaste!" : "Game Over";
+	dialogTitle.textContent = type === "win" ? "¡Acertaste!" : "Game Over";
 	if (type === "lose") {
 		dialogTitle.classList.remove("dialog-title-win");
 		dialogTitle.classList.add("dialog-title-lose");
 	} else {
 		dialogTitle.classList.remove("dialog-title-lose");
 		dialogTitle.classList.add("dialog-title-win");
+		dialogWord.textContent = word.join("").toUpperCase();
 	}
 };
 
@@ -315,7 +307,6 @@ const checkLetter = () => {
 loadValidWords();
 createBoard();
 createKeyboard();
-resetGame(true);
 
 keys!.forEach((key) => {
 	key.addEventListener("click", () => {
@@ -342,8 +333,6 @@ keys!.forEach((key) => {
 				message!.classList.remove("message-error");
 				checkWord();
 				checkLetter();
-				console.log("currentWord", currentWord);
-				console.log("numberLetter", numberLetter);
 			}
 			const row = document.querySelector<HTMLDivElement>(`.row-${currentRow}`);
 			if (!row) return;
