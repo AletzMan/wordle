@@ -57,6 +57,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 const message = document.querySelector<HTMLDivElement>(".message") as HTMLDivElement;
 const dialog = document.querySelector<HTMLDialogElement>(".dialog") as HTMLDialogElement;
 const dialogWord = document.querySelector<HTMLSpanElement>(".dialog-word") as HTMLSpanElement;
+const dialogTitle = document.querySelector<HTMLSpanElement>(".dialog-title") as HTMLSpanElement;
 
 const createKeyboard = () => {
 	const keyboard = document.querySelector<HTMLDivElement>(".keyboard")!;
@@ -231,9 +232,18 @@ const showDialog = (message: string[], type: "win" | "lose") => {
 		dialog.close();
 		dialog.open = false;
 		dialog.classList.remove("dialog-show");
+		console.log("type", type);
 		resetGame(type === "win");
 	});
 	button.textContent = type === "win" ? "Jugar de nuevo" : "Intentar de nuevo";
+	dialogTitle.textContent = type === "win" ? "¡Ganaste!" : "Game Over";
+	if (type === "lose") {
+		dialogTitle.classList.remove("dialog-title-win");
+		dialogTitle.classList.add("dialog-title-lose");
+	} else {
+		dialogTitle.classList.remove("dialog-title-lose");
+		dialogTitle.classList.add("dialog-title-win");
+	}
 };
 
 const checkWord = () => {
@@ -243,11 +253,10 @@ const checkWord = () => {
 			.join("")
 			.toLowerCase() === word.join("").toLowerCase()
 	) {
-		debugger;
 		dialogWord.textContent = word.join("").toUpperCase();
-		showDialog(["¡Felicidades!", "Adivinaste la palabra"], "win");
+		showDialog(["", "Adivinaste la palabra"], "win");
 	} else if (currentRow === 5) {
-		showDialog(["No has adivinado la palabra", "😥"], "lose");
+		showDialog(["No has adivinado la palabra", ""], "lose");
 	}
 };
 const checkLetter = () => {
