@@ -55,9 +55,6 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 `;
 
 const message = document.querySelector<HTMLDivElement>(".message") as HTMLDivElement;
-const dialog = document.querySelector<HTMLDialogElement>(".dialog") as HTMLDialogElement;
-const dialogWord = document.querySelector<HTMLSpanElement>(".dialog-word") as HTMLSpanElement;
-const dialogTitle = document.querySelector<HTMLSpanElement>(".dialog-title") as HTMLSpanElement;
 
 const createKeyboard = () => {
 	const keyboard = document.querySelector<HTMLDivElement>(".keyboard")!;
@@ -213,7 +210,6 @@ const resetGame = (newGame: boolean = false) => {
 		testSelectWord();
 	}
 	resetKeyboard();
-	dialogWord.textContent = "";
 };
 
 const resetKeyboard = () => {
@@ -222,18 +218,37 @@ const resetKeyboard = () => {
 	});
 };
 
+const createDialog = () => {
+	const body = document.querySelector<HTMLBodyElement>("body")!;
+	const dialog = document.createElement("dialog");
+	dialog.classList.add("dialog");
+	dialog.innerHTML = `
+		<div class="dialog-container">
+			<span class="dialog-title"></span>
+			<div class="dialog-message"></div>
+			<span class="dialog-word"></span>
+			<button class="dialog-button">OK</button>
+		</div>
+	`;
+	body.appendChild(dialog);
+};
+
 const showDialog = (message: string[], type: "win" | "lose") => {
+	createDialog();
+	const dialog = document.querySelector<HTMLDialogElement>(".dialog")!;
 	if (!dialog) return;
 	dialog.classList.add("dialog-show");
 	dialog.open = true;
 	dialog.querySelector<HTMLDivElement>(".dialog-message")!.innerHTML = message.join("<br>");
+	const dialogTitle = document.querySelector<HTMLSpanElement>(".dialog-title") as HTMLSpanElement;
 	const button = dialog.querySelector<HTMLButtonElement>(".dialog-button")!;
-	button.addEventListener("click", () => {
+	button.addEventListener("mousedown", () => {
 		dialog.close();
 		dialog.open = false;
 		dialog.classList.remove("dialog-show");
 		console.log("type", type);
 		resetGame(type === "win");
+		dialog.remove();
 	});
 	button.textContent = type === "win" ? "Jugar de nuevo" : "Intentar de nuevo";
 	dialogTitle.textContent = type === "win" ? "¡Ganaste!" : "Game Over";
@@ -253,7 +268,6 @@ const checkWord = () => {
 			.join("")
 			.toLowerCase() === word.join("").toLowerCase()
 	) {
-		dialogWord.textContent = word.join("").toUpperCase();
 		showDialog(["", "Adivinaste la palabra"], "win");
 	} else if (currentRow === 5) {
 		showDialog(["No has adivinado la palabra", ""], "lose");
@@ -315,14 +329,17 @@ keys!.forEach((key) => {
 			if (!cell) return;
 			cell.classList.remove("new-letter");
 			cell.textContent = "";
+			message!.classList.remove("message-error");
 			message!.textContent = "";
 			currentWord[currentColumn].letter = "";
 		} else if (letter === "enter") {
 			if (currentColumn !== 5) return;
 			if (!isWordValid()) {
 				message!.textContent = "Palabra no valida";
+				message!.classList.add("message-error");
 				return;
 			} else {
+				message!.classList.remove("message-error");
 				checkWord();
 				checkLetter();
 				console.log("currentWord", currentWord);
