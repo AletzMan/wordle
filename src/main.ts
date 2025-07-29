@@ -6,15 +6,15 @@ type CurrentWord = {
 	isPresent: boolean;
 };
 
-type NumberLetter = {
+/*type NumberLetter = {
 	letter: string;
 	count: number;
-};
+};*/
 
-const URL_API = "https://random-word-api.herokuapp.com/word?length=5&lang=es";
-const URL_API_DICTIONARY = "https://rae-api.com/api/words/";
+//const URL_API = "https://random-word-api.herokuapp.com/word?length=5&lang=es";
+//const URL_API_DICTIONARY = "https://rae-api.com/api/words/";
 
-const testWord = [
+/*const testWord = [
 	"capas",
 	"callo",
 	"arbol",
@@ -25,7 +25,7 @@ const testWord = [
 	"legua",
 	"marea",
 	"maria",
-];
+];*/
 
 //let word = ["A", "B", "R", "I", "R"];
 //let word = ["A", "R", "B", "O", "L"];
@@ -44,7 +44,7 @@ let currentWord: CurrentWord[] = [
 	{ letter: "", isCorrect: false, isPresent: false },
 ];
 let correctWords: string[] = [];
-let numberLetter: NumberLetter[] = [];
+//let numberLetter: NumberLetter[] = [];
 let keys: NodeListOf<HTMLDivElement> | null = null;
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
@@ -131,7 +131,7 @@ const createBoard = () => {
 	board.innerHTML = html;
 };
 
-const countLetters = (): NumberLetter[] => {
+/*const countLetters = (): NumberLetter[] => {
 	let coutnLetter: NumberLetter[] = [];
 	for (let i = 0; i < word.length; i++) {
 		const letter = word[i];
@@ -143,7 +143,7 @@ const countLetters = (): NumberLetter[] => {
 		}
 	}
 	return coutnLetter;
-};
+};*/
 
 const loadValidWords = async () => {
 	const response = await fetch(
@@ -166,7 +166,7 @@ const selectWord = () => {
 	const index: number = Math.floor(Math.random() * response.length);
 	const wordDeleteAccent = deleteAccent(response[index]);
 	word = wordDeleteAccent.split("").map((l: string) => l.toLowerCase());
-	numberLetter = [...countLetters()];
+	//numberLetter = [...countLetters()];
 };
 
 const isWordValid = (): boolean => {
@@ -350,7 +350,7 @@ keys!.forEach((key) => {
 				{ letter: "", isCorrect: false, isPresent: false },
 				{ letter: "", isCorrect: false, isPresent: false },
 			];
-			numberLetter = [...countLetters()];
+			//numberLetter = [...countLetters()];
 		} else {
 			if (letter === "backspace") return;
 			currentWord[currentColumn].letter = letter;
