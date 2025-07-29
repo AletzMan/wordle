@@ -166,13 +166,11 @@ const selectWord = () => {
 	const index: number = Math.floor(Math.random() * response.length);
 	const wordDeleteAccent = deleteAccent(response[index]);
 	word = wordDeleteAccent.split("").map((l: string) => l.toLowerCase());
-	console.log("word", word);
 	numberLetter = [...countLetters()];
 };
 
 const isWordValid = (): boolean => {
 	const wordDeleteAccent = deleteAccent(currentWord.map((l) => l.letter).join(""));
-	console.log("wordDeleteAccent", wordDeleteAccent);
 	if (correctWords.includes(wordDeleteAccent)) {
 		return true;
 	}
@@ -330,6 +328,10 @@ keys!.forEach((key) => {
 			if (!isWordValid()) {
 				message!.textContent = "Palabra no valida";
 				message!.classList.add("message-error");
+				setTimeout(() => {
+					message!.classList.remove("message-error");
+					message!.textContent = "";
+				}, 3000);
 				return;
 			} else {
 				message!.classList.remove("message-error");
