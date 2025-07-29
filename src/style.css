@@ -74,12 +74,6 @@ body {
 }
 
 .message-error {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 0 1em;
-	border-radius: 6px;
-	font-weight: 500;
 	background-color: #ff000060;
 	animation: message-error 0.2s ease-in-out;
 }
@@ -230,6 +224,12 @@ body {
 .message {
 	height: 2.5em;
 	color: var(--text-color);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 1em;
+	border-radius: 6px;
+	font-weight: 500;
 }
 
 .footer {
