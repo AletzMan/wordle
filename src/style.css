@@ -44,6 +44,7 @@ body {
 	padding: 0.5em 1em;
 	background-color: var(--surface-color-b);
 	color: var(--text-color);
+	border-bottom: 1px solid var(--surface-color-g);
 }
 
 .header-title {
@@ -240,15 +241,60 @@ body {
 	font-weight: 500;
 }
 
+.instructions {
+	position: absolute;
+	bottom: 2.5em;
+	right: 0.5em;
+	padding: 0.25em;
+	border-radius: 6px;
+	background-color: var(--surface-color-d);
+	border: 1px solid var(--surface-color-g);
+	color: var(--text-color);
+	text-shadow: 0 0 2px var(--surface-color-a);
+}
+
+.instructions-button {
+	width: 2em;
+	height: 2em;
+	border-radius: 50%;
+	background-color: #248dee;
+	border: 1px solid var(--surface-color-d);
+	color: var(--text-color);
+	transition: color 0.2s ease-in-out, transform 50ms ease-in-out;
+	user-select: none;
+	cursor: pointer;
+
+	&:active {
+		& ~ .instructions-content {
+			display: flex;
+		}
+	}
+}
+
+.instructions-content {
+	display: none;
+	flex-direction: column;
+	align-items: start;
+	justify-content: left;
+	gap: 0.25em;
+	padding: 1em 0 1em 2em;
+}
 .footer {
 	display: flex;
 	justify-content: space-between;
 	position: fixed;
 	bottom: 0;
-	width: 100svw;
+	width: calc(100svw - 2em);
 	padding: 0.5em 1em;
 	background-color: var(--surface-color-b);
 	color: var(--text-color);
+	border-top: 1px solid var(--surface-color-g);
+	font-size: 0.8em;
+
+	a {
+		color: var(--accent-color);
+		text-decoration: none;
+	}
 }
 
 .dialog {
