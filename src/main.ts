@@ -12,6 +12,7 @@ type NumberLetter = {
 };
 
 const URL_API = "https://random-word-api.herokuapp.com/word?length=5&lang=es";
+const URL_API_DICTIONARY = "https://rae-api.com/api/words/";
 
 const testWord = [
 	"capas",
@@ -146,12 +147,13 @@ const countLetters = (): NumberLetter[] => {
 
 const loadValidWords = async () => {
 	const response = await fetch(
-		`https://raw.githubusercontent.com/hermitdave/FrequencyWords/refs/heads/master/content/2018/es/es_50k.txt`
+		`https://raw.githubusercontent.com/titoBouzout/Dictionaries/refs/heads/master/Spanish.dic`
 	);
 	const data = await response.text();
 	const words = data.split("\n");
-	const onlyLetters = words.map((l) => l.replace(/\s\d+$/, ""));
-	correctWords = [...onlyLetters];
+	const onlyLetters = words.map((l) => l.replace(/\/.*/g, ""));
+	const normalizeWords = onlyLetters.map((l) => deleteAccent(l));
+	correctWords = [...normalizeWords];
 	resetGame(true);
 };
 
@@ -162,16 +164,16 @@ function deleteAccent(word: string): string {
 const selectWord = () => {
 	const response = correctWords.filter((w) => w.length === 5);
 	const index: number = Math.floor(Math.random() * response.length);
-	const newWord = response[index];
-	console.log("newWord", newWord);
-	const wordDeleteAccent = deleteAccent(newWord);
+	const wordDeleteAccent = deleteAccent(response[index]);
 	word = wordDeleteAccent.split("").map((l: string) => l.toLowerCase());
 	console.log("word", word);
 	numberLetter = [...countLetters()];
 };
 
 const isWordValid = (): boolean => {
-	if (correctWords.includes(currentWord.map((l) => l.letter).join(""))) {
+	const wordDeleteAccent = deleteAccent(currentWord.map((l) => l.letter).join(""));
+	console.log("wordDeleteAccent", wordDeleteAccent);
+	if (correctWords.includes(wordDeleteAccent)) {
 		return true;
 	}
 	return false;
