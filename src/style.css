@@ -47,6 +47,9 @@ body {
 }
 
 .header-title {
+	display: flex;
+	align-items: center;
+	gap: 0.25em;
 	color: var(--accent-color);
 }
 
@@ -82,10 +85,12 @@ body {
 	0% {
 		transform: scale(0.95);
 	}
+
 	100% {
 		transform: scale(1.05);
 	}
 }
+
 .row {
 	display: flex;
 	align-items: center;
@@ -103,6 +108,7 @@ body {
 	0% {
 		box-shadow: 0 0 8px 2px #ffffff70;
 	}
+
 	100% {
 		box-shadow: none;
 	}
@@ -148,10 +154,12 @@ body {
 		font-size: 0;
 		transform: scale(0.95);
 	}
+
 	50% {
 		font-size: 1.9em;
 		transform: scale(1.05);
 	}
+
 	100% {
 		font-size: 1.5em;
 		transform: scale(1);
