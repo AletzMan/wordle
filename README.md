@@ -6,7 +6,7 @@ Un clon simple del juego **Wordle** desarrollado con **TypeScript**, **HTML** y 
 
 ## 📷 Vista previa
 
-![Vista previa del juego](./preview.png)
+![Vista previa del juego](https://raw.githubusercontent.com/AletzMan/ImagesStorage/refs/heads/main/vanillacollection/wordle.webp)
 
 ---
 
